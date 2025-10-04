@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="180" height="180" fill="#3b82f6" rx="36"/>
+  
+  <!-- Document Icon -->
+  <g transform="translate(36, 27)">
+    <rect x="0" y="0" width="108" height="125.99999999999999" fill="white" rx="9"/>
+    
+    <!-- Lines representing text -->
+    <rect x="18" y="27" width="72" height="7.2" fill="#3b82f6" rx="3.6"/>
+    <rect x="18" y="45" width="54" height="7.2" fill="#3b82f6" rx="3.6"/>
+    <rect x="18" y="62.99999999999999" width="62.99999999999999" height="7.2" fill="#3b82f6" rx="3.6"/>
+    
+    <!-- Currency symbol -->
+    <text x="54" y="104.39999999999999" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#10b981" text-anchor="middle">ج.م</text>
+  </g>
+</svg>

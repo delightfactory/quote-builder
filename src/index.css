@@ -1,0 +1,327 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-secondary;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-muted-foreground/30;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground/50;
+}
+
+/* RTL Support */
+[dir="rtl"] {
+  text-align: right;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(
+    to right,
+    hsl(var(--muted)) 0%,
+    hsl(var(--muted-foreground) / 0.1) 50%,
+    hsl(var(--muted)) 100%
+  );
+  background-size: 1000px 100%;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-bounce-slow {
+  animation: bounce 3s ease-in-out infinite;
+}
+
+/* Touch-friendly styles for mobile */
+@media (hover: none) and (pointer: coarse) {
+  button, .cursor-pointer {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus visible for accessibility */
+*:focus-visible {
+  @apply outline-2 outline-offset-2 outline-primary;
+}
+
+/* Safe area for notched devices */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+}
+
+/* Print styles - Enhanced */
+@media print {
+  /* Hide non-printable elements */
+  .no-print {
+    display: none !important;
+  }
+  
+  /* Full width for print */
+  .print-full-width {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  /* Body settings */
+  body {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    background: white !important;
+    font-size: 11pt;
+    line-height: 1.3;
+  }
+  
+  /* Page settings */
+  @page {
+    size: A4;
+    margin: 1.5cm 1cm;
+  }
+  
+  /* Typography */
+  h1 {
+    font-size: 24pt;
+    margin-bottom: 8pt;
+  }
+  
+  h2 {
+    font-size: 18pt;
+    margin-bottom: 6pt;
+  }
+  
+  h3 {
+    font-size: 14pt;
+    margin-bottom: 4pt;
+  }
+  
+  p {
+    margin-bottom: 4pt;
+  }
+  
+  /* Table styles */
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    page-break-inside: avoid;
+  }
+  
+  thead {
+    display: table-header-group;
+  }
+  
+  tr {
+    page-break-inside: avoid;
+  }
+  
+  th, td {
+    border: 1px solid #333 !important;
+    padding: 6pt !important;
+  }
+  
+  th {
+    background-color: #f0f0f0 !important;
+    font-weight: bold;
+  }
+  
+  /* Avoid page breaks */
+  .no-break {
+    page-break-inside: avoid;
+  }
+  
+  /* Shadows and effects */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  /* Links */
+  a {
+    text-decoration: none;
+    color: #000 !important;
+  }
+  
+  /* Force white background for print */
+  .print\:bg-white {
+    background: white !important;
+  }
+  
+  /* Borders */
+  .print\:border {
+    border: 1px solid #333 !important;
+  }
+  
+  /* Text colors - Force visible colors */
+  [class*="text-primary"],
+  [class*="text-green"],
+  [class*="text-orange"],
+  [class*="text-blue"] {
+    color: inherit !important;
+  }
+  
+  /* Background colors - Simplified */
+  [class*="bg-orange"] {
+    background-color: #fff7ed !important;
+  }
+  
+  [class*="bg-green"] {
+    background-color: #f0fdf4 !important;
+  }
+  
+  [class*="bg-blue"] {
+    background-color: #eff6ff !important;
+  }
+  
+  [class*="bg-primary"] {
+    background-color: #dbeafe !important;
+  }
+  
+  [class*="bg-muted"] {
+    background-color: #f5f5f5 !important;
+  }
+  
+  /* Borders for colored boxes */
+  [class*="border-green"] {
+    border-color: #22c55e !important;
+  }
+  
+  [class*="border-primary"] {
+    border-color: #2563eb !important;
+  }
+  
+  /* Prevent page breaks within these elements */
+  .grid,
+  .space-y-3 > div {
+    page-break-inside: avoid;
+  }
+}
