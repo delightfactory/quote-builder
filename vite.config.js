@@ -13,5 +13,17 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true
-  }
+  },
+  build: {
+    // Ensure assets are copied correctly
+    assetsInlineLimit: 0,
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      }
+    }
+  },
+  // Ensure CSV files are treated as static assets
+  assetsInclude: ['**/*.csv'],
+  publicDir: 'public'
 })

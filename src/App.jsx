@@ -18,15 +18,23 @@ const AppContent = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
+        console.log('🔄 Loading products...');
         // Load products
         const products = await parseProducts('/items_final_with_care_category_v3.csv');
         setProducts(products);
+        console.log(`✅ Loaded ${products.length} products`);
         
         // Load subsidy data
-        await loadSubsidyData('/final_unified_products.csv');
-        console.log('✅ Subsidy data loaded successfully');
+        console.log('🔄 Loading subsidy data...');
+        try {
+          await loadSubsidyData('/final_unified_products.csv');
+          console.log('✅ Subsidy data loaded successfully');
+        } catch (subsidyError) {
+          console.warn('⚠️ Subsidy data failed to load, continuing without it:', subsidyError);
+          // Don't fail the entire app if subsidy data fails
+        }
       } catch (error) {
-        console.error('Failed to load data:', error);
+        console.error('❌ Failed to load data:', error);
         setError('فشل تحميل البيانات. يرجى المحاولة مرة أخرى.');
       } finally {
         setLoading(false);

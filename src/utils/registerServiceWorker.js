@@ -2,48 +2,73 @@
  * Register Service Worker for PWA functionality
  */
 export const registerServiceWorker = () => {
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker
-        .register('/service-worker.js')
-        .then((registration) => {
-          console.log('✅ Service Worker registered successfully:', registration.scope);
-
-          // Check for updates
-          registration.addEventListener('updatefound', () => {
-            const newWorker = registration.installing;
-            console.log('🔄 Service Worker update found');
-
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                // New service worker available
-                console.log('✨ New version available! Reload to update.');
-                
-                // Show update notification
-                if (window.confirm('تحديث جديد متاح! هل تريد التحديث الآن؟')) {
-                  newWorker.postMessage({ type: 'SKIP_WAITING' });
-                  window.location.reload();
-                }
-              }
-            });
-          });
-        })
-        .catch((error) => {
-          console.error('❌ Service Worker registration failed:', error);
-        });
-
-      // Handle controller change
-      let refreshing = false;
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (!refreshing) {
-          refreshing = true;
-          window.location.reload();
-        }
-      });
-    });
-  } else {
-    console.warn('⚠️ Service Workers are not supported in this browser');
+  // Check if we're on a secure context (HTTPS or localhost)
+  const isSecureContext = window.isSecureContext || window.location.hostname === 'localhost';
+  
+  if (!isSecureContext) {
+    console.warn('⚠️ Service Workers require HTTPS or localhost');
+    return;
   }
+  
+  if (!('serviceWorker' in navigator)) {
+    console.warn('⚠️ Service Workers are not supported in this browser');
+    return;
+  }
+
+  window.addEventListener('load', () => {
+    console.log('🔄 Attempting to register Service Worker...');
+    
+    navigator.serviceWorker
+      .register('/service-worker.js', {
+        scope: '/'
+      })
+      .then((registration) => {
+        console.log('✅ Service Worker registered successfully');
+        console.log('   Scope:', registration.scope);
+        console.log('   State:', registration.active?.state || 'installing');
+
+        // Check for updates
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          console.log('🔄 Service Worker update found');
+
+          newWorker.addEventListener('statechange', () => {
+            console.log('   New worker state:', newWorker.state);
+            
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // New service worker available
+              console.log('✨ New version available! Reload to update.');
+              
+              // Show update notification
+              if (window.confirm('تحديث جديد متاح! هل تريد التحديث الآن؟')) {
+                newWorker.postMessage({ type: 'SKIP_WAITING' });
+                window.location.reload();
+              }
+            }
+          });
+        });
+        
+        // Check for updates every hour
+        setInterval(() => {
+          registration.update();
+        }, 60 * 60 * 1000);
+      })
+      .catch((error) => {
+        console.error('❌ Service Worker registration failed:', error);
+        console.error('   Error name:', error.name);
+        console.error('   Error message:', error.message);
+      });
+
+    // Handle controller change
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) {
+        refreshing = true;
+        console.log('🔄 Service Worker controller changed, reloading...');
+        window.location.reload();
+      }
+    });
+  });
 };
 
 /**

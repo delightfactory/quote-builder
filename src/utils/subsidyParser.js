@@ -11,15 +11,25 @@ let subsidyData = {};
  */
 export const loadSubsidyData = async (csvPath) => {
   return new Promise((resolve, reject) => {
+    console.log('📂 Attempting to load subsidy data from:', csvPath);
+    
     Papa.parse(csvPath, {
       download: true,
       header: true,
       skipEmptyLines: true,
       complete: (results) => {
+        console.log('📊 Parse complete. Results:', results);
+        
+        if (!results.data || results.data.length === 0) {
+          console.warn('⚠️ No data found in subsidy CSV');
+          resolve({});
+          return;
+        }
+        
         // Create a map of code -> subsidy info
         subsidyData = {};
         
-        results.data.forEach(row => {
+        results.data.forEach((row, index) => {
           const code = row['الكود الموحّد']?.trim();
           const maxSubsidy = parseFloat(row['أقصى قيمة الدعم']);
           const cost = parseFloat(row['سعر التكلفة']);
@@ -31,14 +41,28 @@ export const loadSubsidyData = async (csvPath) => {
               cost,
               maxSubsidy,
             };
+          } else if (index < 3) {
+            // Log first few invalid rows for debugging
+            console.log(`⚠️ Row ${index} skipped:`, { code, maxSubsidy, cost });
           }
         });
         
-        console.log(`✅ Loaded ${Object.keys(subsidyData).length} subsidized products`);
+        const count = Object.keys(subsidyData).length;
+        console.log(`✅ Loaded ${count} subsidized products`);
+        
+        if (count === 0) {
+          console.warn('⚠️ No valid subsidy data parsed');
+        }
+        
         resolve(subsidyData);
       },
       error: (error) => {
-        console.error('Error loading subsidy data:', error);
+        console.error('❌ Error loading subsidy data:', error);
+        console.error('Error details:', {
+          message: error.message,
+          type: error.type,
+          code: error.code
+        });
         reject(error);
       }
     });

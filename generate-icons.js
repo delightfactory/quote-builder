@@ -19,7 +19,7 @@ if (!fs.existsSync(iconsDir)) {
   fs.mkdirSync(iconsDir, { recursive: true });
 }
 
-// Icon sizes to generate
+// Icon sizes to generate (all required sizes for PWA)
 const sizes = [16, 32, 72, 96, 128, 144, 152, 180, 192, 384, 512];
 
 // Generate SVG icon template
