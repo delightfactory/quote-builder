@@ -41,6 +41,29 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          foreground: "hsl(var(--info-foreground))",
+        },
+        surface: {
+          DEFAULT: "hsl(var(--surface))",
+          foreground: "hsl(var(--surface-foreground))",
+        },
+        elevated: {
+          DEFAULT: "hsl(var(--elevated))",
+          foreground: "hsl(var(--elevated-foreground))",
+        },
+        hover: "hsl(var(--hover))",
+        active: "hsl(var(--active))",
+        focus: "hsl(var(--focus))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -60,6 +83,15 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      zIndex: {
+        'modal': '9999',
+        'modal-backdrop': '9998',
+        'dropdown': '1000',
+        'sticky': '1020',
+        'fixed': '1030',
+        'modal-backdrop-inner': '9999',
+        'tooltip': '1070',
       },
     },
   },

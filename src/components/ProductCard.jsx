@@ -37,94 +37,110 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <Card className="group hover:shadow-lg transition-shadow duration-200 animate-fadeIn overflow-hidden hover:border-primary/30 h-full flex flex-col">
-      {/* Header - Ultra Compact */}
-      <CardHeader className="p-2.5 pb-2 space-y-0 flex-shrink-0">
-        <div className="flex items-start gap-1.5 mb-1">
+    <Card 
+      variant="interactive" 
+      className="group animate-fadeIn overflow-hidden hover:border-primary/40 h-full flex flex-col hover-lift bg-gradient-to-br from-card via-card to-surface/50"
+    >
+      {/* Enhanced Header */}
+      <CardHeader className="p-3 pb-2 space-y-0 flex-shrink-0 relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-t-xl"></div>
+        <div className="flex items-start gap-2 mb-1 relative z-10">
           <div className="flex-1 min-w-0">
-            <CardTitle className="text-xs sm:text-sm font-bold line-clamp-2 leading-tight group-hover:text-primary transition-colors">
+            <CardTitle 
+              size="sm" 
+              className="text-xs sm:text-sm line-clamp-2 leading-tight group-hover:text-primary transition-all duration-300 group-hover:scale-[1.02]"
+            >
               {product.name}
             </CardTitle>
-            <p className="text-[10px] text-muted-foreground font-mono mt-0.5">#{product.code}</p>
+            <div className="flex items-center gap-2 mt-1">
+              <p className="text-[10px] text-muted-foreground font-mono">#{product.code}</p>
+              <div className="w-1 h-1 bg-muted-foreground/30 rounded-full"></div>
+              <p className="text-[10px] text-muted-foreground">منتج</p>
+            </div>
           </div>
-          <Badge className={`${getCategoryColor(product.category)} text-white shrink-0 text-[9px] px-1.5 py-0.5 leading-none`}>
+          <Badge className={`${getCategoryColor(product.category)} text-white shrink-0 text-[9px] px-2 py-1 leading-none shadow-sm hover-scale`}>
             {product.category}
           </Badge>
         </div>
       </CardHeader>
 
-      <CardContent className="p-2.5 pt-0 space-y-1.5 flex-1">
-        {/* Pricing Info - Ultra Compact Grid */}
-        <div className="grid grid-cols-3 gap-1">
-          <div className="bg-orange-50 dark:bg-orange-950/50 rounded px-1 py-1 text-center">
-            <p className="text-[9px] text-orange-600/70 dark:text-orange-400/70 leading-none">تكلفة</p>
-            <p className="text-xs font-bold text-orange-600 dark:text-orange-400 leading-none mt-0.5">
+      <CardContent className="p-3 pt-0 space-y-2 flex-1">
+        {/* Enhanced Pricing Grid */}
+        <div className="grid grid-cols-3 gap-1.5">
+          <div className="bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-950/50 dark:to-orange-900/30 rounded-lg px-2 py-1.5 text-center border border-orange-200/50 dark:border-orange-800/30 hover-scale">
+            <p className="text-[9px] text-orange-600/70 dark:text-orange-400/70 leading-none font-medium">تكلفة</p>
+            <p className="text-xs font-bold text-orange-600 dark:text-orange-400 leading-none mt-1">
               {formatCurrency(product.cost)}
             </p>
           </div>
-          <div className="bg-green-50 dark:bg-green-950/50 rounded px-1 py-1 text-center">
-            <p className="text-[9px] text-green-600/70 dark:text-green-400/70 leading-none">بيع</p>
-            <p className="text-xs font-bold text-green-600 dark:text-green-400 leading-none mt-0.5">
+          <div className="bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-950/50 dark:to-green-900/30 rounded-lg px-2 py-1.5 text-center border border-green-200/50 dark:border-green-800/30 hover-scale">
+            <p className="text-[9px] text-green-600/70 dark:text-green-400/70 leading-none font-medium">بيع</p>
+            <p className="text-xs font-bold text-green-600 dark:text-green-400 leading-none mt-1">
               {formatCurrency(product.price)}
             </p>
           </div>
-          <div className="bg-primary/10 rounded px-1 py-1 text-center">
-            <p className="text-[9px] text-primary/70 leading-none">هامش</p>
-            <p className={`text-xs font-bold leading-none mt-0.5 ${getMarginColor(product.margin)}`}>
+          <div className="bg-gradient-to-br from-primary/10 to-primary/20 rounded-lg px-2 py-1.5 text-center border border-primary/20 hover-scale">
+            <p className="text-[9px] text-primary/70 leading-none font-medium">هامش</p>
+            <p className={`text-xs font-bold leading-none mt-1 ${getMarginColor(product.margin)}`}>
               {product.margin.toFixed(0)}%
             </p>
           </div>
         </div>
 
-        {/* Profit - Compact Line */}
-        <div className="flex items-center justify-between bg-blue-50/50 dark:bg-blue-950/30 rounded px-1.5 py-1">
-          <span className="text-[10px] text-blue-700 dark:text-blue-300">ربح</span>
+        {/* Enhanced Profit Display */}
+        <div className="flex items-center justify-between bg-gradient-to-r from-blue-50/70 to-blue-100/50 dark:from-blue-950/40 dark:to-blue-900/30 rounded-lg px-2 py-1.5 border border-blue-200/50 dark:border-blue-800/30">
+          <div className="flex items-center gap-1">
+            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse-soft"></div>
+            <span className="text-[10px] text-blue-700 dark:text-blue-300 font-medium">صافي الربح</span>
+          </div>
           <span className="text-xs font-bold text-blue-600 dark:text-blue-400">
             {formatCurrency(product.price - product.cost)}
           </span>
         </div>
       </CardContent>
 
-      <CardFooter className="p-2.5 pt-0 flex-shrink-0">
+      <CardFooter className="p-3 pt-0 flex-shrink-0">
         {!inQuote ? (
           <Button
             onClick={() => addToQuote(product)}
-            className="w-full h-8 text-xs"
+            className="w-full h-9 text-xs font-semibold hover-scale shadow-md"
             size="sm"
           >
-            <Plus className="h-3 w-3 ml-1" />
-            إضافة
+            <Plus className="h-3.5 w-3.5 ml-1" />
+            إضافة للعرض
           </Button>
         ) : (
-          <div className="w-full space-y-1">
-            <div className="flex items-center gap-1">
+          <div className="w-full space-y-2">
+            <div className="flex items-center gap-2">
               <Button
-                size="icon"
+                size="icon-sm"
                 variant="outline"
                 onClick={() => updateQuoteItemQuantity(product.id, quantity - 1)}
-                className="h-7 w-7"
+                className="h-8 w-8 hover-scale shadow-sm"
               >
-                <Minus className="h-2.5 w-2.5" />
+                <Minus className="h-3 w-3" />
               </Button>
               
-              <div className="flex-1 bg-primary/10 rounded py-0.5 text-center">
-                <span className="text-[10px] text-muted-foreground">كمية </span>
+              <div className="flex-1 bg-gradient-to-r from-primary/10 to-primary/20 rounded-lg py-1.5 text-center border border-primary/20">
+                <span className="text-[10px] text-muted-foreground font-medium">الكمية: </span>
                 <span className="text-sm font-bold text-primary">{quantity}</span>
               </div>
               
               <Button
-                size="icon"
+                size="icon-sm"
                 variant="outline"
                 onClick={() => updateQuoteItemQuantity(product.id, quantity + 1)}
-                className="h-7 w-7"
+                className="h-8 w-8 hover-scale shadow-sm"
               >
-                <Plus className="h-2.5 w-2.5" />
+                <Plus className="h-3 w-3" />
               </Button>
             </div>
             
-            <div className="text-center text-[10px] text-green-600 dark:text-green-400 font-medium flex items-center justify-center gap-1">
-              <Check className="h-2.5 w-2.5" />
-              في العرض
+            <div className="text-center bg-gradient-to-r from-success/10 to-success/20 rounded-lg py-1 border border-success/20">
+              <div className="text-[11px] text-success font-semibold flex items-center justify-center gap-1">
+                <Check className="h-3 w-3 animate-pulse-soft" />
+                مُضاف للعرض
+              </div>
             </div>
           </div>
         )}

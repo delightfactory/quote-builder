@@ -1,8 +1,10 @@
-import { X, Printer, Download, FileText } from 'lucide-react';
+import { useState } from 'react';
+import { X, Printer, Download, FileText, Eye, EyeOff } from 'lucide-react';
 import Button from './ui/Button';
 import { formatCurrency, formatNumber, calculateQuoteStats, calculateCustomerSavings } from '@/utils/csvParser';
 
 const QuotePreview = ({ quoteItems, quoteName, quoteCustomer, finalPrice, finalMargin, onClose }) => {
+  const [printMode, setPrintMode] = useState('customer'); // 'customer' or 'internal'
   const stats = calculateQuoteStats(quoteItems);
   const finalProfit = finalPrice - stats.totalCost;
   const customerSavings = calculateCustomerSavings(stats.totalPrice, finalPrice);
@@ -10,7 +12,25 @@ const QuotePreview = ({ quoteItems, quoteName, quoteCustomer, finalPrice, finalM
   const quoteNumber = `Q${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}-${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}`;
 
   const handlePrint = () => {
-    window.print();
+    // Add print mode class to body for CSS targeting
+    document.body.classList.add('print-mode');
+    if (printMode === 'customer') {
+      document.body.classList.add('customer-print');
+      document.body.classList.remove('internal-print');
+    } else {
+      document.body.classList.add('internal-print');
+      document.body.classList.remove('customer-print');
+    }
+    
+    // Print after a small delay to ensure classes are applied
+    setTimeout(() => {
+      window.print();
+      
+      // Clean up classes after print
+      setTimeout(() => {
+        document.body.classList.remove('print-mode', 'customer-print', 'internal-print');
+      }, 1000);
+    }, 100);
   };
 
   const handleDownloadPDF = () => {
@@ -55,15 +75,57 @@ const QuotePreview = ({ quoteItems, quoteName, quoteCustomer, finalPrice, finalM
               إغلاق
             </Button>
           </div>
-          <div className="flex gap-2">
-            <Button onClick={handlePrint} className="flex-1">
-              <Printer className="h-4 w-4 ml-2" />
-              طباعة / حفظ PDF
-            </Button>
-            <Button variant="outline" onClick={handleExportData} className="flex-1">
-              <Download className="h-4 w-4 ml-2" />
-              تصدير Excel
-            </Button>
+          <div className="space-y-3">
+            {/* Print Mode Toggle */}
+            <div className="bg-muted/30 rounded-lg p-3">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-muted-foreground">وضع الطباعة:</span>
+                <span className={`text-xs px-2 py-1 rounded-full ${
+                  printMode === 'customer' 
+                    ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' 
+                    : 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300'
+                }`}>
+                  {printMode === 'customer' ? 'للعميل' : 'داخلي'}
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <Button 
+                  variant={printMode === 'customer' ? 'default' : 'outline'}
+                  onClick={() => setPrintMode('customer')}
+                  className="flex-1"
+                  size="sm"
+                >
+                  <Eye className="h-4 w-4 ml-2" />
+                  عرض العميل
+                </Button>
+                <Button 
+                  variant={printMode === 'internal' ? 'default' : 'outline'}
+                  onClick={() => setPrintMode('internal')}
+                  className="flex-1"
+                  size="sm"
+                >
+                  <EyeOff className="h-4 w-4 ml-2" />
+                  عرض داخلي
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                {printMode === 'customer' 
+                  ? 'سيتم إخفاء التكلفة والربحية عند الطباعة' 
+                  : 'سيتم عرض جميع المعلومات الداخلية'
+                }
+              </p>
+            </div>
+            
+            <div className="flex gap-2">
+              <Button onClick={handlePrint} className="flex-1">
+                <Printer className="h-4 w-4 ml-2" />
+                طباعة / حفظ PDF
+              </Button>
+              <Button variant="outline" onClick={handleExportData} className="flex-1">
+                <Download className="h-4 w-4 ml-2" />
+                تصدير Excel
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -161,15 +223,35 @@ const QuotePreview = ({ quoteItems, quoteName, quoteCustomer, finalPrice, finalM
                   <span className="font-semibold">{stats.totalQuantity} قطعة</span>
                 </div>
 
-                <div className="flex justify-between items-center p-3 bg-orange-50 dark:bg-orange-950 rounded print:bg-orange-50">
-                  <span className="text-orange-700 dark:text-orange-300 font-semibold">
-                    إجمالي التكلفة:
-                  </span>
-                  <span className="text-xl font-bold text-orange-600 dark:text-orange-400">
-                    {formatCurrency(stats.totalCost)} ج.م
-                  </span>
+                {/* Internal View Only - Company Cost & Profit */}
+                <div className={`space-y-3 ${printMode === 'customer' ? 'screen-only' : ''}`}>
+                  <div className="flex justify-between items-center p-3 bg-orange-50 dark:bg-orange-950 rounded print:bg-orange-50">
+                    <span className="text-orange-700 dark:text-orange-300 font-semibold">
+                      إجمالي التكلفة:
+                    </span>
+                    <span className="text-xl font-bold text-orange-600 dark:text-orange-400">
+                      {formatCurrency(stats.totalCost)} ج.م
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between items-center p-3 bg-primary/10 rounded print:bg-blue-50">
+                    <span className="text-primary font-semibold">هامش الربح:</span>
+                    <span className="text-xl font-bold text-primary">
+                      {finalMargin.toFixed(2)}%
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between items-center p-3 bg-blue-50 dark:bg-blue-950 rounded print:bg-blue-50">
+                    <span className="text-blue-700 dark:text-blue-300 font-semibold">
+                      قيمة الربح:
+                    </span>
+                    <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
+                      {formatCurrency(finalProfit)} ج.م
+                    </span>
+                  </div>
                 </div>
 
+                {/* Customer View - Original Price */}
                 <div className="flex justify-between items-center p-3 bg-gray-100 dark:bg-gray-800 rounded print:bg-gray-100">
                   <span className="text-gray-700 dark:text-gray-300 font-semibold">
                     السعر الأصلي:
@@ -179,15 +261,15 @@ const QuotePreview = ({ quoteItems, quoteName, quoteCustomer, finalPrice, finalM
                   </span>
                 </div>
 
-                {/* Customer Savings - Highlighted */}
+                {/* Customer Savings - Always Show if Available */}
                 {customerSavings.isSavings && (
                   <div className="flex justify-between items-center p-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950 rounded-lg border-2 border-purple-400 print:bg-purple-50">
                     <div>
                       <span className="text-purple-700 dark:text-purple-300 text-lg font-bold block">
-                        🎉 استفادة العميل:
+                        🎉 التوفير:
                       </span>
                       <span className="text-xs text-purple-600 dark:text-purple-400">
-                        ({customerSavings.savingsPercentage.toFixed(1)}% توفير)
+                        ({customerSavings.savingsPercentage.toFixed(1)}% خصم)
                       </span>
                     </div>
                     <span className="text-2xl font-bold text-purple-600 dark:text-purple-400">
@@ -196,22 +278,7 @@ const QuotePreview = ({ quoteItems, quoteName, quoteCustomer, finalPrice, finalM
                   </div>
                 )}
 
-                <div className="flex justify-between items-center p-3 bg-primary/10 rounded print:bg-blue-50">
-                  <span className="text-primary font-semibold">هامش الربح:</span>
-                  <span className="text-xl font-bold text-primary">
-                    {finalMargin.toFixed(2)}%
-                  </span>
-                </div>
-
-                <div className="flex justify-between items-center p-3 bg-blue-50 dark:bg-blue-950 rounded print:bg-blue-50">
-                  <span className="text-blue-700 dark:text-blue-300 font-semibold">
-                    قيمة الربح:
-                  </span>
-                  <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
-                    {formatCurrency(finalProfit)} ج.م
-                  </span>
-                </div>
-
+                {/* Final Price - Always Show */}
                 <div className="flex justify-between items-center p-4 bg-gradient-to-r from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 rounded-lg border-2 border-green-500 print:bg-green-50">
                   <span className="text-green-700 dark:text-green-300 text-lg font-bold">
                     الإجمالي النهائي:
